@@ -13,8 +13,8 @@
     }
   ],
   "functions": {
-    "main.py": {
-      "memory": 1024
+    "api/**/*.py": {
+      "excludeFiles": "main.py"
     }
   }
 }

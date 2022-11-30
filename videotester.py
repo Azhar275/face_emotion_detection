@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import warnings
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.utils import load_img, img_to_array
+from tensorflow.keras.utils import img_to_array
 from keras.models import load_model
 
 warnings.filterwarnings("ignore")
