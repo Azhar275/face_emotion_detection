@@ -11,5 +11,10 @@
       "src": "/(.*)",
       "dest": "/"
     }
-  ]
+  ],
+  "functions": {
+    "main.py": {
+      "memory": 1024
+    }
+  }
 }
