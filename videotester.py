@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 import warnings
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.utils import img_to_array
 from keras.models import load_model
 
 warnings.filterwarnings("ignore")
@@ -34,9 +32,12 @@ def generate_frames():
             # cropping region of interest i.e. face area from  image
             roi_gray = gray_img[y:y + w, x:x + h]
             roi_gray = cv2.resize(roi_gray, (224, 224))
-            img_pixels = image.img_to_array(roi_gray)
+            # mengubah gambar menjadi array
+            img_pixels = np.asarray(roi_gray)
             img_pixels = np.expand_dims(img_pixels, axis=0)
-            img_pixels /= 255
+            # numpy.core._exceptions._UFuncOutputCastingError: Cannot cast ufunc 'divide' output from dtype('float64') to dtype('uint8') with casting rule 'same_kind'
+            # handling error
+            img_pixels = img_pixels / 255
 
             predictions = model.predict(img_pixels)
 
@@ -60,6 +61,6 @@ def generate_frames():
     # frame = buffer.tobytes()
 #     if cv2.waitKey(10) == ord('q'):  # wait until 'q' key is pressed
 #         break
-
+generate_frames()
 # cap.release()
 # cv2.destroyAllWindows
