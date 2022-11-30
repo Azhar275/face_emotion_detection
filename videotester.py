@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import warnings
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 
 warnings.filterwarnings("ignore")
 
