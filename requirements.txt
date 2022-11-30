@@ -12,7 +12,7 @@ google-auth==2.14.1
 google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
 grpcio==1.48.2
-h5py==3.7.0
+h5py==3.1.0
 idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
