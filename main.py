@@ -7,6 +7,11 @@ import videotester
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 
+def generate_frames():
+    while True:
+        frame = videotester.generate_frames()
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/')
 def coba():
@@ -15,7 +20,7 @@ def coba():
 
 @app.route('/video')
 def video():
-    return Response(videotester.generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/index')

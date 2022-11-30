@@ -54,8 +54,8 @@ def generate_frames():
         resized_img = cv2.resize(test_img, (1000, 700))
         ret, buffer = cv2.imencode('.jpg', resized_img)
         frame = buffer.tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        return frame
+        
 
     # buffer = cv2.imshow('Facial Emotion Detection', resized_img)
     # frame = buffer.tobytes()
