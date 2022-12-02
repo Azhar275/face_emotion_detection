@@ -1,19 +1,16 @@
 import cv2
 import numpy as np
 import warnings
-# from keras.models import load_model
-# import tensorflow as tf
-import tflite_runtime.interpreter as tflite
+# from keras.models import  load_model
+import json
+import requests
 
 warnings.filterwarnings("ignore")
 
 # load model
 # model = load_model("best_model.h5")
-# Load TFLite model and allocate tensors.
-interpreter = tflite.Interpreter(model_path="model.tflite")
-interpreter.allocate_tensors()
-output = interpreter.get_output_details()[0]  # Model has single output.
-input = interpreter.get_input_details()[0]  # Model has single input.
+
+
 face_haar_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
@@ -43,23 +40,21 @@ def generate_frames():
             # numpy.core._exceptions._UFuncOutputCastingError: Cannot cast ufunc 'divide' output from dtype('float64') to dtype('uint8') with casting rule 'same_kind'
             # handling error
             img_pixels = img_pixels / 255
-            # print(img_pixels)
-            img_pixels = np.float32(img_pixels)
-            interpreter.set_tensor(input['index'], img_pixels)
-            interpreter.invoke()
-            predictions = interpreter.get_tensor(output['index'])
-            # print(predictions)
-            # predictions = model.predict(img_pixels)
+            # membuat img_pixels menjadi json request
+            data = json.dumps({"signature_name":"serving_default","instances": img_pixels.tolist()})
+            url= "http://localhost:8501/v1/models/emotion_detection:predict"
+            response = requests.post(url, data=data, headers={"content_type" : "applications/json"})
 
+            predictions_json = json.loads(response.text)
             # find max indexed array
-            max_index = np.argmax(predictions[0])
+            max_index = np.argmax(predictions_json['predictions'])
 
             emotions = ('angry', 'disgust', 'fear', 'happy',
                         'sad', 'surprise', 'neutral')
             predicted_emotion = emotions[max_index]
 
             cv2.putText(test_img, predicted_emotion, (int(x), int(y)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
         resized_img = cv2.resize(test_img, (1000, 700))
         ret, buffer = cv2.imencode('.jpg', resized_img)
@@ -67,9 +62,10 @@ def generate_frames():
         return frame
         
 
-    # buffer = cv2.imshow('Facial Emotion Detection', resized_img)
-    # frame = buffer.tobytes()
-#     if cv2.waitKey(10) == ord('q'):  # wait until 'q' key is pressed
-#         break
-# cap.release()
-# cv2.destroyAllWindows
+    #     cv2.imshow('Facial Emotion Detection', resized_img)
+
+    #     if cv2.waitKey(10) == ord('q'):  # wait until 'q' key is pressed
+    #         break
+
+    # cap.release()
+    # cv2.destroyAllWindows
