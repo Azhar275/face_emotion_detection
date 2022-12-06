@@ -17,7 +17,7 @@ def generate_frames():
 
 @app.route('/')
 def coba():
-    return render_template('coba.html')
+    return render_template('index.html')
 
 
 @app.route('/video')
